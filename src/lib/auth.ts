@@ -8,7 +8,7 @@ import GoogleProvider from 'next-auth/providers/google'
 function getGoogleCredentials() {
     const clientId = process.env.GOOGLE_CLIENT_ID
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET
-
+    console.log(clientId , clientSecret)
     if (!clientId || clientId.length === 0) {
         throw new Error('Missing GOOGLE_CLIENT_ID')
     }
@@ -35,6 +35,7 @@ export const authOptions: NextAuthOptions = {
             clientSecret: getGoogleCredentials().clientSecret,
         }),
     ],
+    secret: "PLACE-HERE-ANY-STRING",
     callbacks: {
         async jwt({ token, user }) {
             const dbUserResult = (await redis.get(`user:${token.id}`)) as
@@ -45,7 +46,6 @@ export const authOptions: NextAuthOptions = {
                 if (user) {
                     token.id = user!.id
                 }
-
                 return token
             }
 
@@ -65,7 +65,7 @@ export const authOptions: NextAuthOptions = {
                 session.user.email = token.email
                 session.user.image = token.picture
             }
-
+           console.log("Session" , session)
             return session
         },
         redirect() {
